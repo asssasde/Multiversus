@@ -4,7 +4,29 @@ var bombLocations = [];
 var radius = (($(window).width())/100)*10;
 console.log(radius);
 var shadow = '-webkit-box-shadow: 0 0 4vw #ffffff ;';
-	
+var weaponType = ["bombs", "missile","grenade", "tnt", "nuke", "gun", "lightSabers"];	
+var numPlayers = 0;
+// Initialize Firebase
+var config = 
+{
+	apiKey: "AIzaSyBPtoHBXaP3vyueBiwOyNo6lSKeiRVuxNs",
+	authDomain: "ggj2018multiverse.firebaseapp.com",
+	databaseURL: "https://ggj2018multiverse.firebaseio.com",
+	projectId: "ggj2018multiverse",
+	storageBucket: "",
+	messagingSenderId: "37973487332"
+};
+firebase.initializeApp(config);
+
+var database = firebase.database();
+
+// database.ref('users').on("value", function(snapshot) {
+
+
+// });
+//createPlayer();
+
+
 
 
 // //********* placeholder canvas animations *********
@@ -21,8 +43,62 @@ var shadow = '-webkit-box-shadow: 0 0 4vw #ffffff ;';
 // var damage = -10;
 // var attack = health + damage;
 
+var Sprite = function(name, maxHp, currHp, weapons)
+{		
+	this.name = name;			
+	this.maxHp = maxHp; //max hp
+	this.currHp = currHp; //current hp
+	this.bomb = [0,0], // [type, amount]
+	this.missile = [1,0], // [type, amount]
+	this.missile = [2,0], // [type, amount]
+	this.grenade = [3,0], // [type, amount]
+	this.tnt = [4,0], // [type, amount]
+	this.nuke = [5,0], // [type, amount]
+	this.gun = [6,0], // [type, amount]
+	this.lightSabers =[7,0] // [type, energy]
+}
+
+
+
+
 // //********* Attack/Threat (TYPES) *********
-var weaponType = ["grenade", "tnt", "nuke", "bullet", "missile", "gun"];
+
+
+
+
+// });
+
+
+function createPlayer()
+{
+database.ref('/players').once("value", function(snapshot) {
+var charlie = new Sprite ('charlie', 100,100);
+console.log(charlie);
+console.log(charlie.name);
+numPlayers = Object.keys(snapshot.val()).length;
+console.log(numPlayers);
+sendPlayerToFirebase(numPlayers, charlie);
+console.log(Object.keys(snapshot.val()).length);
+
+});	
+}
+
+function sendPlayerToFirebase(numPlayers, newPlayer)
+{
+	database.ref("players/player" +(numPlayers++)).set(newPlayer);
+}
+
+
+
+function updateLocation(x, y)
+{
+database.ref("players/player" +(numPlayers)+"/location/x").set(x);
+database.ref("players/player" +(numPlayers)+"/location/y").set(y);
+database.ref("players/player" +(numPlayers)+"/location/userScreenWidth").set(($(window).width()));
+}
+
+
+
 
 var threatType = {
 	natural: {
@@ -82,13 +158,15 @@ var threatType = {
 // //********* User Attacks Function (spawns weapon constructors) *********
 // var UserAttacks = function(){
 // var AttackArray = [];
-// var WeaponSprites = function(type, attack, active, cycle, placement){		
+
+// var WeaponSprites = function(type, attack, active, cycle, placement)
+// {		
 // 			this.type = type;			
 // 			this.attack = attack; //(damage = % to health)
 // 			this.active = active; //false	
 // 			this.cycle = cycle; //cycle of event
 // 			this.placement = placement; //random Math --> location on grid (canvas)
-// 		}
+// }
 // 		for(var i = 0; i < 2; i++){
 // var WeaponCount = i;
 // 		WeaponCount = new WeaponSprites(weaponType , (damage += 10), false, 4, randomDrop);
@@ -137,6 +215,7 @@ var threatType = {
 
 
 var theUser = document.querySelector("#mainPlayer");
+var theEnemy = document.querySelector("#enemy");
 var container = document.querySelector("#planet1");
 var planet2 = document.querySelector("#planet2");
 var planet3 = document.querySelector("#planet3");
@@ -149,6 +228,10 @@ bombDeployer.addEventListener("click", deployBombs, false);
 missileDeployer.addEventListener("click", launchmissile, false);
 detonate.addEventListener("click", attack, false);
 returnTester.addEventListener("click", phasePlanets, false);
+buttonEnemy.addEventListener("click", moveEnemy, false);
+
+
+
 
 function attack (e)
 {
@@ -180,16 +263,49 @@ for (var i=0;i<bombPosition.length;i++)
 }
 }
 
+function absoluteLocation()
+{
+	var p = $( "#mainPlayer" );
+	var position = p.position();
+	var width = $("#planet1").width() ;
+	var height = $("#planet1").height();
+	console.log("x " +width+ " y"+height);
+	// itemPositionx =position.left;
+	// itemPositiony =position.top;	
+	itemPositionx =((position.left/width)*100) + 5;
+	console.log("x% is " + itemPositionx);
+	itemPositiony =(((position.top)/height)*100)+10;
+	console.log("y% is " + itemPositiony);
+	//itemPositiony =position.top;	
+	updateLocation(itemPositionx,itemPositiony);
+}
+
+
 function launchmissile (e)
 {
+	absoluteLocation();
+	console.log(itemPositionx + " " +itemPositiony)
 	bombLocations[bombLocations.length] = [itemPositionx,itemPositiony];
-	$("#planet1").append('<div class="missile" style="transform: translate3d('+itemPositionx+'px,' +itemPositiony+'px, 0px);" ></div>');	
+	$("#planet1").append('<div class="missile" style="top:' +itemPositiony+'%; left: '+itemPositionx+'%;" ></div>');	
 }
 
 function deployBombs (e)
 {	
+	absoluteLocation();
 	bombLocations[bombLocations.length] = [itemPositionx,itemPositiony];
-	$("#planet1").append('<div class="bomb" style="transform: translate3d('+itemPositionx+'px,' +itemPositiony+'px, 0px);" ></div>');
+	$("#planet1").append('<div class="bomb" style="top:' +itemPositiony+'%; left: '+itemPositionx+'%;" ></div>');
+}
+
+function moveEnemy()
+{
+database.ref('/players').on("value", function(snapshot) {
+	console.log(snapshot.val().player0.location.x);
+	console.log(snapshot.val().player0.location.y);
+	var width = $("#planet1").width() *(((snapshot.val().player0.location.x)/100)-0.05) ;
+	var height = $("#planet1").height()*(((snapshot.val().player0.location.y)/100)-0.1);
+	var translate3dValue = "translate3d(" + width +"px,"+ height + "px,0)";
+	theEnemy.style.transform =translate3dValue;
+});
 }
 
 function animatePlanet (e){
@@ -225,19 +341,16 @@ $("#planet4").addClass('planet4a');
 }
 
 function getClickPosition(e){
-	//var xPosition = e.clientX;
-	//var yPosition = e.clientY;
 	var parentPosition = getPosition(container)
-	// var xPosition = e.clientX - (thePlanet.offsetWidth/2);
-	// var yPosition = e.clientY - (thePlanet.offsetHeight/2);
 	var xPosition = e.clientX - parentPosition.x- (theUser .offsetWidth/2);
 	var yPosition = e.clientY - parentPosition.y-(theUser .offsetHeight/2);
-	itemPositionx =xPosition;
-	itemPositiony =yPosition;
-	console.log(xPosition);
-	console.log(yPosition);
+
+
 	var translate3dValue = "translate3d(" + xPosition +"px,"+ yPosition + "px,0)";
-	theUser.style.transform = translate3dValue;
+	theUser.style.transform =translate3dValue;
+
+	
+	setTimeout(function(){ absoluteLocation(); }, 1000);
 
 }
 

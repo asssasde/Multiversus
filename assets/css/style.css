@@ -51,9 +51,20 @@ body {
 	background-image: url("../images/mainSprite/user01.png");
 	background-repeat: no-repeat;
 	background-size: 100% 100%;
-	transform: translate3d(50px,50px, 0);
+	/*transform: translate3d(50px,50px, 0);*/
 	transition: transform.3s cubic-bezier(0, .64, .52, .24);
-	position: fixed; /* or absolute */
+	position: absolute; /* or absolute */
+	z-index: -1;
+}
+#enemy {
+	width: 4vw;
+	height:10vw;
+	background-image: url("../images/mainSprite/user01.png");
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	/*transform: translate3d(50px,50px, 0);*/
+	transition: transform.3s cubic-bezier(0, .64, .52, .24);
+	position: absolute; /* or absolute */
 	z-index: -1;
 }
 .bomb {
@@ -61,10 +72,9 @@ body {
 	height: 5vw;
 	background-image: url("../images/weapons/bomb.png");
 	background-repeat: no-repeat;
-	transform: translate3d(50px,50px, 0);
 	background-size: 70%;
 	background-position: center;
-	position: fixed; /* or absolute */
+	position: absolute; /* or absolute */
 	z-index: -1;
 }
 
@@ -73,10 +83,9 @@ body {
 	height: 7vw;
 	background-image: url("../images/weapons/missile.png");
 	background-repeat: no-repeat;
-	transform: translate3d(50px,50px, 0);
 	background-size: 70%;
 	background-position: center;
-	position: fixed; /* or absolute */
+	position: absolute; /* or absolute */
 	z-index: -1;
 }
 

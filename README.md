@@ -2,7 +2,7 @@
 
 ### MultiVersus is an 8-bit JavaScript game where you have one chance to interact with other dimensions. *What do you do?*
 
-#### You can check out the game ![Live Game here](https://reyhenry38.github.io/Multiversus/)
+#### You can check out the game ![Live Game here](https://buddyeorl.github.io/ggj2018/)
 
 
 # The Tech

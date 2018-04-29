@@ -32,10 +32,10 @@
 # The Team
 ## This game was developed by:
 
-- [Alex - @buddyeorl](https://github.com/buddyeorl)
-- [Mariela - @mariela2p](https://github.com/mariela2p)
+- [Alex - @buddyeorl](#)
+- [Mariela - @mariela2p](#)
 - [Ejike - @reyhenry38](https://github.com/reyhenry38)
-- [Charlie - @thotfull](https://github.com/thotfool)
+- [Charlie - @tThoughtFool](#)
 
 
 #### Special Thanks to [Melissa - @m-wolowicz](https://github.com/m-wolowicz), and [Frank - @fhern077](https://github.com/fhern077) for helping to make this game into reality.
